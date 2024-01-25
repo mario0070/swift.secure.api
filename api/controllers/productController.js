@@ -28,6 +28,7 @@ const createproduct = (req, res) => {
 
 const getAllProduct = (req, res) => {
     productSchema.find()
+    .sort({"createdAt" : "desc"})
     .populate("owner")
     .then(data => {
          res.status(200).json({
@@ -60,6 +61,7 @@ const show = (req, res) => {
 
 const searchProduct = (req, res) => {
     productSchema.find({name : { $regex: req.body.name}})
+    .sort({"createdAt" : "desc"})
     .populate("owner")
     .then(data => {
          res.status(200).json({
@@ -91,6 +93,7 @@ const deleteProduct = (req, res) => {
 
 const getProductByOwner = (req, res) => {
     productSchema.find({owner : req.body.id})
+    .sort({"createdAt" : "desc"})
     .populate("owner")
     .then(data => {
          res.status(200).json({

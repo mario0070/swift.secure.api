@@ -26,6 +26,7 @@ const createOrder = (req, res) => {
 
 const getAllOrder = (req, res) => {
     orderSchema.find()
+    .sort({"createdAt" : "desc"})
     .populate("product")
     .populate("owner")
     .populate("orderBy")
@@ -44,6 +45,7 @@ const getAllOrder = (req, res) => {
 
 const getOrderByOrderBy = (req, res) => {
     orderSchema.find({orderBy : req.body.orderBy})
+    .sort({"createdAt" : "desc"})
     .populate("product")
     .populate("owner")
     .populate("orderBy")
@@ -76,6 +78,7 @@ const cancelOrder = (req, res) => {
 
 const getOrderByVendor = (req, res) => {
     orderSchema.find({owner : req.body.owner})
+    .sort({"createdAt" : "desc"})
     .populate("product")
     .populate("owner")
     .populate("orderBy")
