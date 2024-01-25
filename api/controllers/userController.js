@@ -73,7 +73,7 @@ const loginUser = (req, res) => {
                     )
                     res.status(200).json({
                         message : "user logged  in",
-                        user,
+                        user: user[0],
                         "access-token" : token
                     })
                 }else{
