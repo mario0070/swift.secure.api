@@ -1,7 +1,33 @@
 const orderSchema = require("../model/orderSchema")
+var nodemailer = require('nodemailer');
+
+
+const sentIt = (req, res, to) => {
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'muhammadjamiuganiu2@gmail.com',
+          pass: 'zgns ddlm yvot vvjy'
+        }
+    });
+    
+    var mailOptions = {
+        to: to,
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            res.status(405).json({error})
+        } else {
+            res.status(200).json({msg : info.response})
+        }
+    });
+}
 
 const createOrder = (req, res) => {
-
+    // sentIt(req, res, "ganiujamiu03@gmail.com")
     const order = new orderSchema({
         orderBy : req.body.orderBy,
         owner : req.body.owner,
