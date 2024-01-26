@@ -13,7 +13,7 @@ const createproduct = (req, res) => {
     const product = new productSchema({
         name : req.body.name,
         price : req.body.price,
-        image : req.file.filename,
+        image : req.file ? req.file.filename : "no file",
         description : req.body.description,
         owner : req.body.owner
     })
@@ -27,7 +27,7 @@ const createproduct = (req, res) => {
     })
     .catch( err => {
         res.status(500).json({
-            message: err
+            message: err,
         })
     })
                
