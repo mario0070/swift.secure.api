@@ -13,7 +13,7 @@ const createproduct = (req, res) => {
     const product = new productSchema({
         name : req.body.name,
         price : req.body.price,
-        image : req.file ? req.file.filename : null,
+        image : req.file.filename,
         description : req.body.description,
         owner : req.body.owner
     })
