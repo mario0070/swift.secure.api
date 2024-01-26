@@ -1,11 +1,19 @@
+const multer = require("multer");
 const productSchema = require("../model/productSchema")
 
 const createproduct = (req, res) => {
+    if (!req.file) {
+        // res.status(404).json({message : "no file found"})
+        var image = null;
+    } else {
+        // res.status(200).json({message : req.file.filename})
+        var image = req.file.filename;
+    }
 
     const product = new productSchema({
         name : req.body.name,
         price : req.body.price,
-        image : req.body.image,
+        image : image,
         description : req.body.description,
         owner : req.body.owner
     })

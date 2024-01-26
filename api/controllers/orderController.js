@@ -45,6 +45,7 @@ const getAllOrder = (req, res) => {
 
 const getOrderByOrderBy = (req, res) => {
     orderSchema.find({orderBy : req.body.orderBy})
+    .limit(10)
     .sort({"createdAt" : "desc"})
     .populate("product")
     .populate("owner")
@@ -66,6 +67,7 @@ const cancelOrder = (req, res) => {
     orderSchema.findByIdAndUpdate(req.body.id, {"status" : "cancel"})
     .then(data => {
          res.status(200).json({
+             message : "Order is cancel",   
              data
          })
     })

@@ -5,6 +5,15 @@ const userRoutes = require("./api/routes/userRoute")
 const productRoute = require("./api/routes/productRoute")
 const orderRoute = require("./api/routes/orderRoute")
 const cors = require("cors")
+const multer = require("multer")
+const path = require('path')
+const bodyParser = require('body-parser');
+
+
+
+app.use(express.static("./public"))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json())
 app.use(morgan("dev"))
