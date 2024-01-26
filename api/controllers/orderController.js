@@ -45,7 +45,6 @@ const getAllOrder = (req, res) => {
 
 const getOrderByOrderBy = (req, res) => {
     orderSchema.find({orderBy : req.body.orderBy})
-    .limit(10)
     .sort({"createdAt" : "desc"})
     .populate("product")
     .populate("owner")
