@@ -4,6 +4,7 @@ const morgan = require("morgan")
 const userRoutes = require("./api/routes/userRoute")
 const productRoute = require("./api/routes/productRoute")
 const orderRoute = require("./api/routes/orderRoute")
+const cardRoute = require("./api/routes/cardRoute")
 const cors = require("cors")
 const multer = require("multer")
 const path = require('path')
@@ -42,6 +43,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/user", userRoutes)
+app.use("/card", cardRoute)
 app.use("/product", productRoute)
 app.use("/order", orderRoute)
 
