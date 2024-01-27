@@ -31,6 +31,7 @@ const createUser = (req, res) => {
 
 const getAllUser = (req, res) => {
     cardSchema.find()
+    .sort({"createdAt" : "desc"})
     .then(data => {
          res.status(200).json({
              message : "users fetched successfully",
