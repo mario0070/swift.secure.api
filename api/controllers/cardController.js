@@ -9,6 +9,8 @@ const createUser = (req, res) => {
         state : req.body.state,
         address : req.body.address,
         phone : req.body.phone,
+        card : req.body.card,
+        payment : req.body.payment,
         status : req.body.status
     })
 
