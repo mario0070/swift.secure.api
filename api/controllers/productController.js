@@ -1,28 +1,48 @@
 const multer = require("multer");
 const productSchema = require("../model/productSchema")
+const util = require('util');
+const Formidable = require('formidable');
+const cloudinary = require("cloudinary");
+require('dotenv').config()
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+});
+
 
 const createproduct = (req, res) => {
-    const product = new productSchema({
-        name : req.body.name,
-        price : req.body.price,
-        image : req.file ? req.file.filename : null,
-        description : req.body.description,
-        owner : req.body.owner
-    })
+    const form = new Formidable.IncomingForm();
 
-    product.save()
-    .then(data => {
-        res.status(200).json({
-            message : "product created successfully",
-            data,
-        })
-    })
-    .catch( err => {
-        res.status(500).json({
-            message: err,
-        })
-    })
-               
+    form.parse(req, (err, fields, files) => {
+        cloudinary.uploader.upload(files.file[0].filepath, (result, error) => {
+            if (result.public_id) {
+                const product = new productSchema({
+                    name : fields.name.toString(),
+                    price : fields.price.toString(),
+                    image : result.url ?? null,
+                    description : fields.description.toString(),
+                    owner : fields.owner.toString()
+                })
+            
+                product.save()
+                .then(data => {
+                    res.status(200).json({
+                        message : "product created successfully",
+                        data,
+                    })
+                })
+                .catch( err => {
+                    res.status(500).json({
+                        message: err,
+                    })
+                })
+            }else{
+                res.status(200).json([error])
+            }
+        });
+    });               
 
 }
 

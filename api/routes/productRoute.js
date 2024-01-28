@@ -19,7 +19,7 @@ var upload = multer({
 });
 
 route.get("/", productController.getAllProduct)
-route.post("/create", upload.single("file"), productController.createproduct)
+route.post("/create", productController.createproduct)
 route.post("/show", productController.show)
 route.post("/delete", productController.deleteProduct)
 route.get("/search-product", productController.searchProduct)
