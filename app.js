@@ -9,7 +9,29 @@ const cors = require("cors")
 const multer = require("multer")
 const path = require('path')
 const bodyParser = require('body-parser');
+const util = require('util');
+const Formidable = require('formidable');
+const cloudinary = require("cloudinary");
+require('dotenv').config()
 
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+});
+
+app.get("/test", (req, res) => {
+    const form = new Formidable.IncomingForm();
+    form.parse(req, (err, fields, files) => {
+        cloudinary.uploader.upload(files.file[0].filepath, (result, error) => {
+            if (result.public_id) {
+                res.status(200).json([result])
+            }else{
+                res.status(200).json([error])
+            }
+        });
+    });
+})
 
 
 app.use(express.static("./public"))
