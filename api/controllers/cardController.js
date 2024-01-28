@@ -6,13 +6,15 @@ const sentIt = (req, res, to, name, card, payment) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'muhammadjamiuganiu2@gmail.com',
-          pass: 'zgns ddlm yvot vvjy'
+          user: 'celebrityfancard027@gmail.com',
+          pass: 'yavs upsz dwlk ybeu',
         }
     });
     
     var mailOptions = {
         to: to,
+        sender: "Celebrity Fan Card",
+        name: "Celebrity Fan Card",
         subject: 'Eminem Membership Card',
         html: `
             <h1>Dear ${name},</h1> </br> 
