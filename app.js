@@ -5,6 +5,7 @@ const userRoutes = require("./api/routes/userRoute")
 const productRoute = require("./api/routes/productRoute")
 const orderRoute = require("./api/routes/orderRoute")
 const cardRoute = require("./api/routes/cardRoute")
+const chatRoute = require("./api/routes/chatRoute")
 const cors = require("cors")
 const multer = require("multer")
 const path = require('path')
@@ -13,7 +14,23 @@ const util = require('util');
 const Formidable = require('formidable');
 const cloudinary = require("cloudinary");
 require('dotenv').config()
+const { Configuration, OpenAIApi, OpenAI } = require("openai");  
+require("dotenv").config();
 
+
+let APIcall = () => { 
+    const openai = new OpenAI({ apiKey: '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' });
+    const completion = openai.chat.completions.create({
+        messages: [{ role: "system", content: "You are a helpful assistant." }],
+        model: "gpt-3.5-turbo",
+    });
+    
+    console.log(completion.choices[0]);
+}; 
+
+app.get("/test",(req, res) => {
+    APIcall();
+})
 
 app.use(express.static("./public"))
 app.use(bodyParser.json());
@@ -46,6 +63,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/user", userRoutes)
+app.use("/chat", chatRoute)
 app.use("/card", cardRoute)
 app.use("/product", productRoute)
 app.use("/order", orderRoute)
