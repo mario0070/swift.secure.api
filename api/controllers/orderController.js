@@ -2,53 +2,93 @@ const orderSchema = require("../model/orderSchema")
 const userSchema = require("../model/userSchema")
 var nodemailer = require('nodemailer');
 
-const sentIt = (req, res, to, orderbyName, product, vendor) => {
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'muhammadjamiuganiu2@gmail.com',
-          pass: 'yavs upsz dwlk ybeu',
+const sentIt = (req, res, to, orderbyName, product, vendor, type) => {
+    orderSchema.findOne({orderBy : orderbyName})
+    .sort({"createAt" : "asc"})
+    .populate("orderBy")
+    .populate("product")
+    .populate("owner")
+    .populate("agent")
+    .then(data => {
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'swift.secure.deliver@gmail.com',
+              pass: 'vnmv onnd lfjx ybmo',
+            }
+        });
+
+        if(type == "user"){
+            var mailOptions = {
+                to: data.orderBy.email,
+                subject: 'Swift Order Notification',
+                html: `
+                    <h1>Dear ${data.orderBy.firstname},</h1> </br> 
+                    <h3>You have successfully order a <strong style="color:green;text-decoration:underline">${data.product.name}</strong> and Paid <strong style="color:green;text-decoration:underline">${data.product.price}</strong>. </h3> </br>
+                    <h3>Thank you for checking our website.</h3>
+                    <h3>Our Delivery Agent is on the way to pick up your order, Your product will be deliver swiftly</h3></br>
+                    <p>Warm regards,</p>
+                    <p>${data.orderBy.firstname},</>
+        
+                `,
+            };
         }
-    });
+
+        if(type == "agent"){
+            var mailOptions = {
+                to: to,
+                subject: 'Swift Order Notification',
+                html: `
+                    <h1>Dear ${data.agent.firstname},</h1> </br> 
+                    <h3>We have an active order waiting for you to be pick up at <strong style="color:green;text-decoration:underline">${data.owner.address}</strong> and Product Name is <strong style="color:green;text-decoration:underline">${data.product.name}</strong>. </h3> </br>
+                    <h3>Our user is currently waiting for their order, Please pick up the product as soon as possible.</h3>
+                    <h3>Call the vendor to this number <strong style="color:green;text-decoration:underline">${data.owner.phone}</strong>, and show him this email notification</h3></br>
+                    <p>Warm regards,</p>
+                    <p>${data.agent.firstname},</>
+        
+                `,
+            };
+        }
+
+        if(type == "vendor"){
+            var mailOptions = {
+                to: data.owner.email,
+                subject: 'Swift Order Notification',
+                html: `
+                    <h1>Dear ${data.owner.firstname},</h1> </br> 
+                    <h3>An order has being placed on one of the product you listed on our platform, Product name is <strong style="color:green;text-decoration:underline">${data.product.name}</strong> order by <strong style="color:green;text-decoration:underline">${data.orderBy.firstname}</strong>. </h3> </br>
+                    <h3>Our Agent is currently on the way to pick the product from your store, Agent name is ${data.agent.firstname}, Please let the product be available before the agent arrives for swift deliver.</h3>
+                    <h3>Call the Agent to this number <strong style="color:green;text-decoration:underline">${data.agent.phone}</strong>, if the agent takes long to arrive</h3></br>
+                    <p>Warm regards,</p>
+                    <p>${data.agent.firstname},</>
+        
+                `,
+            };
+        }
+        
     
-    var mailOptions = {
-        to: to,
-        sender: "Celebrity Fan Card",
-        name: "Celebrity Fan Card",
-        subject: 'Eminem Membership Card',
-        html: `
-            <h1>Dear ${orderbyName},</h1> </br> 
-            <h3>You have successfully subscribe to <strong style="color:green;text-decoration:underline">${orderbyName}</strong> Eminem Membership Card and Payment type of <strong style="color:green;text-decoration:underline">${orderbyName}</strong>. </h3> </br>
-            <h3>Welcome! We are thrilled to have you on board and extend a warm greeting as you embark on this exciting journey with us.</h3>
-            <h3>Your membership card, a key to unlocking a world of exclusive benefits and opportunities, is now ready for you. We believe in making your experience with us as seamless and enjoyable as possible, and your membership card is a tangible symbol of the privileges that come with being a valued member.</h3></br>
-            <h3>Here's what you can expect from your membership:</h3>
-            <p>1:) Exclusive Access: Gain entry to members-only events, workshops, and special promotions that are designed just for you.</p> </br>
-            <p>2:) Discounts and Offers: Enjoy special discounts on [Your Organization]'s merchandise, services, and partner establishments as a token of our appreciation for your membership.</p></br>
-            <p>3:) Stay Informed: Receive regular updates on upcoming events, new initiatives, and important announcements directly to your inbox.</p></br>
-            <p>4:) Community Connection: Connect with like-minded individuals who share your passion and interests through our vibrant community forums and networking events.</p> <br>
-            <p>5:) Thank you for choosing Our Organization. We look forward to creating memorable experiences together!</p>
-            <p>Warm regards,</p>
-            <p>${orderbyName},</>
+        transporter.sendMail(mailOptions, function(error, info){
+            if(error){
+                console.log(error)
+            }else{
+                console.log(info.response)
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err)
+    })
 
-        `,
-    };
-
-    transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-            console.log(error)
-        }else{
-            console.log(info.response)
-        }
-    });
 }
 
 
 const createOrder = (req, res) => {
 
-    userSchema.find({role : "vendor"})
+    userSchema.find({role : "agent"})
     .then(agents => {
         var rand = Math.floor(Math.random() * agents.length)
         var agent = agents[rand]
+
         const order = new orderSchema({
             orderBy : req.body.orderBy,
             owner : req.body.owner,
@@ -62,6 +102,9 @@ const createOrder = (req, res) => {
                 message : "order created successfully",
                 data,
             })
+            sentIt(req, res, "",  req.body.orderBy,  req.body.product,  req.body.owner, "user" )
+            sentIt(req, res, "",  req.body.orderBy,  req.body.product,  req.body.owner, "vendor" )
+            sentIt(req, res, agent.email,  req.body.orderBy,  req.body.product,  req.body.owner, "agent" )
         })
         .catch( err => {
             res.status(500).json({
