@@ -18,21 +18,6 @@ require('dotenv').config()
 const { Configuration, OpenAIApi, OpenAI } = require("openai");  
 require("dotenv").config();
 
-
-let APIcall = () => { 
-    const openai = new OpenAI({ apiKey: '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' });
-    const completion = openai.chat.completions.create({
-        messages: [{ role: "system", content: "You are a helpful assistant." }],
-        model: "gpt-3.5-turbo",
-    });
-    
-    console.log(completion.choices[0]);
-}; 
-
-app.get("/test",(req, res) => {
-    APIcall();
-})
-
 app.use(express.static("./public"))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
