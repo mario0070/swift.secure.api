@@ -49,6 +49,8 @@ const createUser = (req, res) => {
                             user,
                             "access-token" : token
                         })
+                        
+                        UserRef(req, res)
                     })
                     .catch( err => {
                         res.status(500).json({
@@ -122,6 +124,28 @@ const getAllUser = (req, res) => {
         error : err
     })
    })
+}
+
+const UserRef = (req, res) => {
+    EarnUserSchema.findOne({ref_code : " " + req.query.ref})
+    .then(res => {
+        if(res){
+            EarnUserSchema.findByIdAndUpdate({_id : res._id},{total_ref : res.total_ref + 1})
+            .then(response => {
+                console.log(response)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+        else{
+            console.log("Referrer code does not exist")
+        }
+       
+    })
+    .catch(err => {
+        console.log(err)
+    })
 }
 
 module.exports = {
