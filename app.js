@@ -80,7 +80,8 @@ app.get('/auth/google/callback', async (req, res) => {
            if(result.length >= 1){
                 res.status(200).json({
                     message : "user already exist",
-                    data : result
+                    data : result,
+                    code
                 })
            }else{
             bcrypt.hash(profile.name, 10, (err, hash) => {
