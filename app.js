@@ -99,6 +99,7 @@ app.get('/auth/google/callback', async (req, res) => {
                         fullname : profile.name,
                         email : profile.email,}, "secret", {expiresIn : "12h"}
                     )
+                    UserRef(req, res)
 
                     res.status(200).json({
                         message : "user created successfully",
@@ -106,11 +107,11 @@ app.get('/auth/google/callback', async (req, res) => {
                         "access-token" : token
                     })
                     
-                    UserRef(req, res)
+
                 })
                 .catch( err => {
                     res.status(500).json({
-                        message: err + " loud"
+                        message: err
                     })
                 })
             }else{
