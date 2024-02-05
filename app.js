@@ -22,11 +22,22 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken");
 const earnUserSchema = require("./api/model/earnUserSchema")
 
+app.use(express.static("./public"))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.json())
+app.use(morgan("dev"))
+app.use(express.urlencoded({extended:true}))
+app.use(cors())
+
+
 const CLIENT_ID = '1089248889378-hib3g0kdhtnc04u3osqh0inrj49h8ga5.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'http://localhost:3000/auth/google/callback';
 
 const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
 function generateString(length) {
     let result = ' ';
     const charactersLength = characters.length;
@@ -40,7 +51,6 @@ function generateString(length) {
 
 app.get('/auth/google', (req, res) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
-//   console.log(url)
   res.redirect(url);
 });
 
@@ -139,15 +149,6 @@ const UserRef = (req, res) => {
         console.log(err)
     })
 }
-
-app.use(express.static("./public"))
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(express.json())
-app.use(morgan("dev"))
-app.use(express.urlencoded({extended:true}))
-app.use(cors())
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
