@@ -34,7 +34,7 @@ app.use(cors())
 
 const CLIENT_ID = '1089248889378-hib3g0kdhtnc04u3osqh0inrj49h8ga5.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'http://localhost:3000/auth/google/callback';
+const REDIRECT_URI = 'http://127.0.0.1:5174/login';
 
 const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
