@@ -57,8 +57,8 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
     const { code } = req.query;
-  
-    try {
+
+    if(code){
         const { data } = await axios.post('https://oauth2.googleapis.com/token', {
             client_id: CLIENT_ID,
             client_secret: CLIENT_SECRET,
@@ -122,12 +122,81 @@ app.get('/auth/google/callback', async (req, res) => {
                 })
             }
         })
-
-    } 
-    catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({error})
     }
+    else{
+        res.status(500).json({error: "No query code"})
+    }
+  
+    // try {
+    //     const { data } = await axios.post('https://oauth2.googleapis.com/token', {
+    //         client_id: CLIENT_ID,
+    //         client_secret: CLIENT_SECRET,
+    //         code,
+    //         redirect_uri: REDIRECT_URI,
+    //         grant_type: 'authorization_code',
+    //     });
+    
+    //     const { access_token, id_token } = data;
+    
+    //     const { data: profile } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+    //         headers: { Authorization: `Bearer ${access_token}` },
+    //     });
+  
+    //     const ref_code = generateString(15);
+        
+    //     earnUserSchema.find({email : profile.email})
+    //     .then(result => {
+    //        if(result.length >= 1){
+    //             res.status(200).json({
+    //                 message : "user already exist",
+    //                 data : result
+    //             })
+    //        }else{
+    //         bcrypt.hash(profile.name, 10, (err, hash) => {
+    //         if(hash){
+    //             const user = new earnUserSchema({
+    //                 fullname : profile.name,
+    //                 password : hash,
+    //                 email : profile.email,
+    //                 phone : null,
+    //                 ref_code : ref_code,
+    //             })
+            
+    //             user.save()
+    //             .then(data => {
+    //                 const token = jwt.sign({ 
+    //                     fullname : profile.name,
+    //                     email : profile.email,}, "secret", {expiresIn : "12h"}
+    //                 )
+    //                 UserRef(req, res)
+
+    //                 res.status(200).json({
+    //                     message : "user created successfully",
+    //                     data,
+    //                     "access-token" : token
+    //                 })
+                    
+
+    //             })
+    //             .catch( err => {
+    //                 res.status(500).json({
+    //                     message: err
+    //                 })
+    //             })
+    //         }else{
+    //             res.status(500).json({
+    //                 message: "Something went wrong"
+    //             })
+    //         }
+    //             })
+    //         }
+    //     })
+
+    // } 
+    // catch (error) {
+    //     console.error('Error:', error);
+    //     res.status(500).json({error})
+    // }
 });
 
 const UserRef = (req, res) => {
