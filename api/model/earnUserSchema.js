@@ -6,7 +6,7 @@ const EarnUserSchema = new schema({
     fullname : {type : String, required : true},
     email : {type : String, required : true},
     password : {type : String, required : true},
-    phone : {type : Number, required : true},
+    phone : {type : Number, default : null},
     balance : {type : Number, default : 0.00},
     total_ref : {type : Number, default : 0},
     taskTotal : {type : Number, default : 0},
