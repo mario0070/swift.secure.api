@@ -40,7 +40,7 @@ function generateString(length) {
 
 app.get('/auth/google', (req, res) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
-  console.log(url)
+//   console.log(url)
   res.redirect(url);
 });
 
@@ -64,7 +64,15 @@ app.get('/auth/google/callback', async (req, res) => {
   
         const ref_code = generateString(15);
         
-        bcrypt.hash(profile.name, 10, (err, hash) => {
+        earnUserSchema.find({email : profile.email})
+        .then(result => {
+           if(result.length >= 1){
+                res.status(200).json({
+                    message : "user already exist",
+                    data : result
+                })
+           }else{
+            bcrypt.hash(profile.name, 10, (err, hash) => {
             if(hash){
                 const user = new earnUserSchema({
                     fullname : profile.name,
@@ -99,6 +107,8 @@ app.get('/auth/google/callback', async (req, res) => {
                     message: "Something went wrong"
                 })
             }
+                })
+            }
         })
 
     } 
@@ -108,6 +118,27 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 });
 
+const UserRef = (req, res) => {
+    earnUserSchema.findOne({ref_code : " " + req.query.ref})
+    .then(res => {
+        if(res){
+            earnUserSchema.findByIdAndUpdate({_id : res._id},{total_ref : res.total_ref + 1})
+            .then(response => {
+                console.log(response)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+        else{
+            console.log("Referrer code does not exist")
+        }
+       
+    })
+    .catch(err => {
+        console.log(err)
+    })
+}
 
 app.use(express.static("./public"))
 app.use(bodyParser.json());
