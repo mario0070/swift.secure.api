@@ -6,7 +6,7 @@ const server = http.createServer(app)
 const dbUrl = "mongodb+srv://larvish:larvish007@deliveryapp.dlcz1ks.mongodb.net/?retryWrites=true&w=majority"
 mongoose.connect(dbUrl)
 .then(
-    server.listen(3000,() => {
+    server.listen(6000,() => {
         console.log("App is running")
     })
 )
