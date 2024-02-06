@@ -48,6 +48,14 @@ function generateString(length) {
     return result;
 }
 
+app.get('/test1', (req, res) => {
+    var count = 0
+    setInterval(() => {
+        count++
+        console.log("interval")   
+        console.log(count) 
+    }, 3000);
+});
 
 app.get('/auth/google', (req, res) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
