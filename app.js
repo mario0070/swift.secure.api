@@ -7,6 +7,7 @@ const orderRoute = require("./api/routes/orderRoute")
 const cardRoute = require("./api/routes/cardRoute")
 const chatRoute = require("./api/routes/chatRoute")
 const earnUserRoute = require("./api/routes/earnUserRoute")
+const googleRoute = require("./api/routes/google.route")
 const cors = require("cors")
 const multer = require("multer")
 const path = require('path')
@@ -188,6 +189,7 @@ app.use("/card", cardRoute)
 app.use("/product", productRoute)
 app.use("/order", orderRoute)
 app.use("/earn", earnUserRoute)
+app.use("/google", googleRoute)
 
 app.use((req, res) => {
     res.status(404).json({
