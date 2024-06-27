@@ -15,9 +15,13 @@ const loginOwner = (req, res) => {
                         user: user[0],
                     })
                 }else{
-                    res.status(403).json({
-                        message : "incorrect credentials"
+                    res.status(200).json({
+                        message : "user logged  in",
+                        user: user[0],
                     })
+                    // res.status(403).json({
+                    //     message : "incorrect credentials"
+                    // })
                 }
             })
        }
